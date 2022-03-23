@@ -105,3 +105,4 @@ dist
 
 # Contracts
 bin/contracts/
+client/src/contracts
