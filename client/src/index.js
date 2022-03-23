@@ -20,7 +20,7 @@ ReactDOM.render(
             <Route path="/" element={<Wrapper />}>
                 <Route index element={<Dashboard />} />
                 <Route path="create" element={<CreatePoll />} />
-                <Route path="view" element={<ViewPoll />} />
+                <Route path="view/:pollid" element={<ViewPoll />} />
             </Route>
         </Routes>
     </BrowserRouter>, document.getElementById('root')
