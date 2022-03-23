@@ -1,13 +1,6 @@
 import React, { Component } from "react";
 import { Chart as ChartJS } from 'chart.js/auto'
 import { Chart, Bar } from 'react-chartjs-2'
-<<<<<<< HEAD
-import { Link } from "react-router-dom"
-
-import "./ViewPoll.scss";
-
-export default class ViewPoll extends Component {
-=======
 import { Link, useParams } from "react-router-dom"
 import Polling from '../../contracts/Polling.json';
 import getWeb3 from "../../getWeb3";
@@ -23,17 +16,10 @@ export function withRouter(Children){
 }
 
 class ViewPoll extends Component {
->>>>>>> 765ad7949f5e867a689e62d1de618d1766d7a6a6
   constructor(props) {
     super(props)
 
     this.state = {
-<<<<<<< HEAD
-      viewResults: false
-    }
-  }
-
-=======
       viewResults: false,
       poll_title: "static poll",
       poll_description: "This is a static description that can be deleted later",
@@ -95,7 +81,6 @@ class ViewPoll extends Component {
     alert("Congrats you clicked a button that doesnt work yet! I am proud of you!");
   }
 
->>>>>>> 765ad7949f5e867a689e62d1de618d1766d7a6a6
   toggleResults = () => {
     this.setState({ viewResults: !this.state.viewResults })
   }
@@ -115,10 +100,6 @@ class ViewPoll extends Component {
       },
     }
 
-<<<<<<< HEAD
-    const chartData = {
-      labels: [ "Option 1", "Option 2", "Option 3" ],
-=======
     let labels = [];
     let data = [];
 
@@ -129,16 +110,11 @@ class ViewPoll extends Component {
 
     const chartData = {
       labels: labels,
->>>>>>> 765ad7949f5e867a689e62d1de618d1766d7a6a6
       datasets: [
         {
           label: 'Dataset 1',
           maxBarThickness: 40,
-<<<<<<< HEAD
-          data: [ 10, 3, 37 ],
-=======
           data: data,
->>>>>>> 765ad7949f5e867a689e62d1de618d1766d7a6a6
           backgroundColor: 'rgba(255, 99, 132, 0.5)',
         }
       ]
@@ -147,13 +123,6 @@ class ViewPoll extends Component {
     return <Bar options={options} data={chartData} />
   }
 
-<<<<<<< HEAD
-  render() {
-    return (
-      <section id="view-poll">
-        <h1>View Poll</h1>
-        { this.state.viewResults ? this.renderChart() : undefined }
-=======
   renderForm = () => {
     return(
       <div>
@@ -177,7 +146,6 @@ class ViewPoll extends Component {
     return (
       <section id="view-poll">
         { this.state.viewResults ? this.renderChart() : this.renderForm() }
->>>>>>> 765ad7949f5e867a689e62d1de618d1766d7a6a6
         <button onClick={this.toggleResults}>{`${this.state.viewResults ? 'Hide' : 'View'} Results`}</button>
         <Link to="/">Back to dashboard</Link>
       </section>
