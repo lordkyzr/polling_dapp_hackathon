@@ -48,4 +48,9 @@ contract Polling {
         Poll storage poll = polls[id];
         return poll.addressVotes[voter];
     }
+
+    function getPollOptionVotes(uint id, uint option) public view returns(uint) {
+        Poll storage poll = polls[id];
+        return poll.votes[option];
+    }
 }
