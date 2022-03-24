@@ -28,4 +28,29 @@ contract Polling {
             totalVotes: 0
         });
     }
+
+    function voteForPoll(uint id, uint option) public {
+        Poll storage poll = polls[id];
+        
+        require(poll.addressVotes[msg.sender] == 0, "Address already voted.");
+        
+        poll.totalVotes++;
+        poll.votes[option]++;
+        poll.addressVotes[msg.sender] = option;
+    }
+
+    function getPollOptions(uint id) public view returns(string [] memory) {
+        Poll memory poll = polls[id];
+        return poll.options;
+    }
+
+    function getPollAddressVote(uint id, address voter) public view returns(uint) {
+        Poll storage poll = polls[id];
+        return poll.addressVotes[voter];
+    }
+
+    function getPollOptionVotes(uint id, uint option) public view returns(uint) {
+        Poll storage poll = polls[id];
+        return poll.votes[option];
+    }
 }
