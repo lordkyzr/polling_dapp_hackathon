@@ -21,15 +21,38 @@ class ViewPoll extends Component {
 
     this.state = {
       viewResults: false,
-      poll_title: "static poll",
-      poll_description: "This is a static description that can be deleted later",
-      poll_options: [
-        {"votes": 3, "option_text": "fancy"},
-        {"votes": 1, "option_text": "fancier"},
-        {"votes": 7, "option_text": "fanciest"},
-        {"votes": 6, "option_text": "fancy feast"}
-      ]
+      poll_title: "",
+      poll_description: "",
+      poll_options: [],
+      selected_option: null
     }
+
+    // Example state shape:
+    // {
+    //   viewResults: false,
+    //   poll_title: "static poll",
+    //   poll_description: "This is a static description that can be deleted later",
+    //   poll_options: [
+    //     {"votes": 3, "option_text": "fancy"},
+    //     {"votes": 1, "option_text": "fancier"},
+    //     {"votes": 7, "option_text": "fanciest"},
+    //     {"votes": 6, "option_text": "fancy feast"}
+    //   ]
+    // }
+  }
+
+  setPollData = async (contract, pollid, poll) => {
+    let options = await contract.methods.getPollOptions(pollid).call()
+    let optionVotes = Array.from(Array(options.length))
+
+    for (let o = 0; o < options.length; o++) {
+      let votes = await contract.methods.getPollOptionVotes(pollid, o + 1).call()
+      optionVotes[o] = votes
+    }
+
+    let poll_options = options.map((o, idx) => ({ option_text: o, votes: optionVotes[idx] }))
+
+    this.setState({ poll_options, poll_title: poll.title, poll_description: poll.description })
   }
 
   componentDidMount = async () => {
@@ -54,8 +77,9 @@ class ViewPoll extends Component {
       // Set web3, accounts, and contract to the state, and then proceed with an
       // example of interacting with the contract's methods.
       this.setState({ web3, accounts, contract: instance });
-      let results = await instance.methods.polls(pollid).call();
-      console.error(results);
+      let poll = await instance.methods.polls(pollid).call();
+
+      await this.setPollData(instance, pollid, poll)
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -65,20 +89,28 @@ class ViewPoll extends Component {
     }
   };
 
-  onSubmitPoll = () => {
+  onSubmitPoll = async () => {
     const { accounts, contract } = this.state;
 
     // Call Method to Vote
-    // await contract.methods.vote(value).send({ from: accounts[0] });
+    if (this.state.poll_id == null || this.state.selected_option == null) {
+      alert("Select poll option before submitting!")
+      return
+    }
+
+    await contract.methods
+      .voteForPoll(this.state.poll_id, this.state.selected_option + 1)
+      .send({ from: accounts[0] })
 
     // Get the value from the contract to prove it worked.
-    // let results = await instance.methods.polls(pollid).call();
+    let poll = await contract.methods.polls(this.state.poll_id).call();
+
+    await this.setPollData(contract, this.state.poll_id, poll)
 
     // Show user the chart with the values
     this.setState({ viewResults: true });
 
-    //For now show the user an alert saying congrats
-    alert("Congrats you clicked a button that doesnt work yet! I am proud of you!");
+
   }
 
   toggleResults = () => {
@@ -123,16 +155,26 @@ class ViewPoll extends Component {
     return <Bar options={options} data={chartData} />
   }
 
+  changeSelectedValue = (selected_option) => {
+    this.setState({ selected_option })
+  }
+
   renderForm = () => {
     return(
       <div>
-        <h1>{this.state.poll_title}</h1>
+        <h2>{this.state.poll_title}</h2>
         <p>{this.state.poll_description}</p>
         <div>
           {this.state.poll_options.map((option, idx) => {
             return(
               <div key={idx}>
-                <input type="radio" name="pollResult" value={option.option_text} /> {option.option_text}
+                <input 
+                  type="radio"
+                  name="pollResult"
+                  value={option.option_text}
+                  onChange={ () => this.changeSelectedValue(idx) }
+                  checked={ idx === this.state.selected_option }
+                /> {option.option_text}
               </div>
             )
           })}

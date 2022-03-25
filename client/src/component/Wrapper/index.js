@@ -59,7 +59,7 @@ export default class Wrapper extends Component {
       <div className="wrapper">
         <nav>
           <Link to="/create">Create Poll</Link>
-          <Link to="/view">View Poll</Link>
+          {/* <Link to="/view">View Poll</Link> */}
         </nav>
         {/* <h1>Good to Go!</h1>
         <p>Your Truffle Box is installed and ready.</p>
